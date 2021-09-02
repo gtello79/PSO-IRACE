@@ -1,0 +1,11 @@
+#name         switch          type    values          [conditions (using R syntax)]
+c1Aperture    "c1Aperture "    r       (0.0, 2.0)
+c2Aperture    "c2Aperture "    r       (0.0, 2.0)
+c1Intensity   "c1Intensity "   r       (0.0, 2.0)
+c2Intensity   "c2Intensity "   r       (0.0, 2.0)
+inerAperture  "inerAperture "  r       (0.0, 2.0)
+inerIntensity "inerAperture "  r       (0.0, 2.0)
+cnAperture    "cnAperture  "   r       (0.0, 2.0)
+cnIntensity   "cnIntensity "   r       (0.0, 2.0)            
+size          "size "          i       (10, 50)
+iter          "iter "          i       (50, 100)
