@@ -1,3 +1,4 @@
+### Parameter file for the PSO software
 #name         switch          type    values          [conditions (using R syntax)]
 c1Aperture    "c1Aperture "    r       (0.0, 2.0)
 c2Aperture    "c2Aperture "    r       (0.0, 2.0)
