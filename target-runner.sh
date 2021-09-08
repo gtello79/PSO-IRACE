@@ -1,3 +1,44 @@
+#!/bin/bash
+###############################################################################
+# This script is to tune the ACOTSP software.
+#
+# PARAMETERS:
+# $1 is the ID of the candidate to be evaluated
+# $2 is the instance ID
+# $3 is the seed
+# $4 is the instance name
+# The rest ($* after `shift 4') are parameters for running ACOTSP
+#
+# RETURN VALUE:
+# This script should print a single numerical value (the value to be minimized).
+###############################################################################
+
+# Comment this line to execute acotsp!
+echo "$RANDOM"
+exit 0
+
+error() {
+    echo "`TZ=UTC date`: $0: error: $@" >&2
+    exit 1
+}
+
+# Path to the ACOTSP software:
+EXE=ACOTSP-1.03/acotsp
+
+
+# Read experiment information
+CONFIG_ID="$1"
+INSTANCE_ID="$2"
+SEED="$3"
+INSTANCE="$4"
+# All other parameters are the candidate parameters to be passed to program
+shift 4 || error "Not enough parameters"
+CONFIG_PARAMS=$*
+
+# Fixed parameters that should be always passed to ACOTSP.
+# The time to be used is always 10 seconds, and we want only one run:
+FIXED_PARAMS=" --tries 1 --time 5 --quiet "
+
 # File to write the execution output
 STDOUT=c${CONFIG_ID}-${INSTANCE_ID}-${SEED}.stdout
 STDERR=c${CONFIG_ID}-${INSTANCE_ID}-${SEED}.stderr

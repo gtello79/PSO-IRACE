@@ -11,6 +11,5 @@
 ## parameter conditions (NA should be used for those parameters that
 ## are not enabled for a given configuration) and, if given, the
 ## constraints that describe forbidden configurations.
-c1Aperture	c2Aperture c1Intensity  c2Intensity inerAperture inerIntensity cnIntensity cnAperture size iter
-1.0		1.0  	   1.0 	 1.0		1.0		1.0	  1.0         1.0	 10   50	
-
+c1Aperture	c2Aperture c1Intensity  c2Intensity inerAperture inerIntensity cnIntensity cnAperture size 
+1.0		1.0  	   1.0 	 1.0		1.0		1.0	  1.0         1.0	 100   

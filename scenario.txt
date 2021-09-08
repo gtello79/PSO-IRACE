@@ -19,18 +19,19 @@ execDir = "."
 
 ## Directory where tuning instances are located, either absolute path or
 ## relative to current directory.
-trainInstancesDir = "instances/small/training/"
-
+trainInstancesDir = ""
+trainInstancesFile = "instances/train_instances.txt"
 
 ## Set testing data 
-testInstancesDir = "instances/small/testing/"
-testNumElites = 5
+testInstancesDir = ""
+testInstancesFile = "instances/test_instances.txt"
+testNumElites = 100
 
 
 
 ## The maximum number of runs (invocations of targetRunner) that will performed. It
 ## determines the (maximum) budget of experiments for the tuning.
-maxExperiments = 300
+maxExperiments = 800
 
 
 
@@ -41,7 +42,7 @@ parallel = 3
 
 ## A value of 0 silences all debug messages. Higher values provide
 ## more verbose debug messages.
-# debugLevel = 0
+# debugLevel = 3
 
 
 
@@ -64,7 +65,7 @@ targetRunner = function (experiment, scenario) {
   instance_id   = experiment$id.instance
   seed          = experiment$seed 
   instance_name = experiment$instance
-  
+
   # Define fixed parameters (budget or other options)
   fixed_params = "-cp ./pso/src"
 
@@ -73,10 +74,10 @@ targetRunner = function (experiment, scenario) {
 
 
   # Create command line
-  command_line = paste ("i", 1, instance_name, parameters, sep=" ")
-
+  command_line = paste (exe, fixed_params, "i", instance_name, parameters, sep=" ")
+  print(command_line)
   # Execute command
-  output = system2(command=java, args=command_line, stdout=TRUE, stderr=TRUE)
+  output = system2(command="java", args=command_line, stdout=TRUE, stderr=TRUE)
 
   # Check if error!    
   if (!is.null(attr(output, "status"))) {
