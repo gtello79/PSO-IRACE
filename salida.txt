@@ -1,0 +1,412 @@
+#------------------------------------------------------------------------------
+# irace: An implementation in R of (Elitist) Iterated Racing
+# Version: 3.4.1.9fcaeaf
+# Copyright (C) 2010-2020
+# Manuel Lopez-Ibanez     <manuel.lopez-ibanez@manchester.ac.uk>
+# Jeremie Dubois-Lacoste  
+# Leslie Perez Caceres    <leslie.perez.caceres@ulb.ac.be>
+#
+# This is free software, and you are welcome to redistribute it under certain
+# conditions.  See the GNU General Public License for details. There is NO
+# WARRANTY; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# irace builds upon previous code from the race package:
+#     race: Racing methods for the selection of the best
+#     Copyright (C) 2003 Mauro Birattari
+#------------------------------------------------------------------------------
+# installed at: /home/dragon/R/x86_64-pc-linux-gnu-library/3.6/irace
+# called with: 
+Warning: A default scenario file './scenario.txt' has been found and will be read
+# 0 expression(s) specifying forbidden configurations read from '/home/dragon/Desktop/Proyectos/PSO-IRACE/forbidden.txt'
+## irace scenario:
+scenarioFile = "./scenario.txt"
+parameterFile = "/home/dragon/Desktop/Proyectos/PSO-IRACE/parameters.txt"
+execDir = "/home/dragon/Desktop/Proyectos/PSO-IRACE"
+logFile = "/home/dragon/Desktop/Proyectos/PSO-IRACE/irace.Rdata"
+recoveryFile = NULL
+instances = c("5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "57", "58", "59", "60", "61", "62", "67", "68", "69", "70")
+initConfigurations = NULL
+trainInstancesDir = ""
+trainInstancesFile = "/home/dragon/Desktop/Proyectos/PSO-IRACE/instances/train_instances.txt"
+configurationsFile = "/home/dragon/Desktop/Proyectos/PSO-IRACE/default.txt"
+forbiddenExps = NULL = expression()
+forbiddenFile = "/home/dragon/Desktop/Proyectos/PSO-IRACE/forbidden.txt"
+targetRunner = function (experiment, scenario) {    suppressMessages(require("stringr"))    exe = "com.company.Main"    candidate_id = experiment$id.configuration    instance_id = experiment$id.instance    seed = experiment$seed    instance_name = experiment$instance    fixed_params = "-cp ./pso/src com.company.Main"    parameters = buildCommandLine(experiment$configuration, experiment$switches)    command_line = paste(fixed_params, exe, "i", instance_name,         parameters, sep = " ")    cat("AKI SE IMRPIME")    output = system2(command = "java", args = command_line, stdout = TRUE,         stderr = TRUE)    if (!is.null(attr(output, "status"))) {        cat("\nError executing: ", exe, command_line, "\n")        cat(output, "\n\n")        stop()    }    sel = which(sapply(output, grep, pattern = "try 0, Best",         ignore.case = FALSE, value = FALSE) == 1)    result = as.numeric(str_split(str_trim(str_split(output[sel],         ",")[[1]][2]), "\\s")[[1]][2])    return(list(cost = result))}
+targetRunnerRetries = 0
+targetRunnerData = ""
+targetRunnerParallel = NULL
+targetEvaluator = NULL
+maxExperiments = 800
+maxTime = 0
+budgetEstimation = 0.02
+digits = 4
+debugLevel = 10
+nbIterations = 0
+nbExperimentsPerIteration = 0
+sampleInstances = TRUE
+testType = "friedman"
+firstTest = 5
+eachTest = 1
+minNbSurvival = 0
+nbConfigurations = 0
+mu = 5
+confidence = 0.95
+deterministic = FALSE
+seed = NA_character_
+parallel = 3
+loadBalancing = TRUE
+mpi = FALSE
+batchmode = "0"
+softRestart = TRUE
+softRestartThreshold = 1e-04
+testInstancesDir = ""
+testInstancesFile = "/home/dragon/Desktop/Proyectos/PSO-IRACE/instances/test_instances.txt"
+testInstances = c("1t" = "71", "2t" = "1", "3t" = "2", "4t" = "3", "5t" = "4", "6t" = "19", "7t" = "20", "8t" = "21", "9t" = "22", "10t" = "37", "11t" = "38", "12t" = "39", "13t" = "40", "14t" = "56", "15t" = "55", "16t" = "54", "17t" = "53", "18t" = "66", "19t" = "65", "20t" = "64", "21t" = "63")
+testNbElites = 1
+testIterationElites = FALSE
+elitist = TRUE
+elitistNewInstances = 1
+elitistLimit = 2
+repairConfiguration = NULL
+capping = FALSE
+cappingType = "median"
+boundType = "candidate"
+boundMax = NULL
+boundDigits = 0
+boundPar = 1
+boundAsTimeout = TRUE
+postselection = 0
+aclib = FALSE
+## end of irace scenario
+# --- Parameters Hierarchy ---
+[1] "c1Aperture"    "c2Aperture"    "c1Intensity"   "c2Intensity"   "inerAperture"  "inerIntensity" "cnAperture"    "cnIntensity"   "size"         
+   c1Aperture    c2Aperture   c1Intensity   c2Intensity  inerAperture inerIntensity    cnAperture   cnIntensity          size 
+            1             1             1             1             1             1             1             1             1 
+   c1Aperture    c2Aperture   c1Intensity   c2Intensity  inerAperture inerIntensity    cnAperture   cnIntensity          size 
+           ""            ""            ""            ""            ""            ""            ""            ""            "" 
+      Parameter Level Depends.on
+1    c1Aperture     1           
+2    c2Aperture     1           
+3   c1Intensity     1           
+4   c2Intensity     1           
+5  inerAperture     1           
+6 inerIntensity     1           
+7    cnAperture     1           
+8   cnIntensity     1           
+9          size     1           
+
+# ------------------------
+$names
+[1] "c1Aperture"    "c2Aperture"    "c1Intensity"   "c2Intensity"   "inerAperture"  "inerIntensity" "cnAperture"    "cnIntensity"   "size"         
+
+$types
+   c1Aperture    c2Aperture   c1Intensity   c2Intensity  inerAperture inerIntensity    cnAperture   cnIntensity          size 
+          "r"           "r"           "r"           "r"           "r"           "r"           "r"           "r"           "i" 
+
+$switches
+     c1Aperture      c2Aperture     c1Intensity     c2Intensity    inerAperture   inerIntensity      cnAperture     cnIntensity            size 
+  "c1Aperture "   "c2Aperture "  "c1Intensity "  "c2Intensity " "inerAperture " "inerAperture "  "cnAperture  "  "cnIntensity "         "size " 
+
+$domain
+$domain$c1Aperture
+[1] 0 2
+
+$domain$c2Aperture
+[1] 0 2
+
+$domain$c1Intensity
+[1] 0 2
+
+$domain$c2Intensity
+[1] 0 2
+
+$domain$inerAperture
+[1] 0 2
+
+$domain$inerIntensity
+[1] 0 2
+
+$domain$cnAperture
+[1] 0 2
+
+$domain$cnIntensity
+[1] 0 2
+
+$domain$size
+[1] 100 500
+
+
+$conditions
+$conditions$c1Aperture
+[1] TRUE
+
+$conditions$c2Aperture
+[1] TRUE
+
+$conditions$c1Intensity
+[1] TRUE
+
+$conditions$c2Intensity
+[1] TRUE
+
+$conditions$inerAperture
+[1] TRUE
+
+$conditions$inerIntensity
+[1] TRUE
+
+$conditions$cnAperture
+[1] TRUE
+
+$conditions$cnIntensity
+[1] TRUE
+
+$conditions$size
+[1] TRUE
+
+
+$isFixed
+   c1Aperture    c2Aperture   c1Intensity   c2Intensity  inerAperture inerIntensity    cnAperture   cnIntensity          size 
+        FALSE         FALSE         FALSE         FALSE         FALSE         FALSE         FALSE         FALSE         FALSE 
+
+$transform
+$transform$c1Aperture
+[1] ""
+
+$transform$c2Aperture
+[1] ""
+
+$transform$c1Intensity
+[1] ""
+
+$transform$c2Intensity
+[1] ""
+
+$transform$inerAperture
+[1] ""
+
+$transform$inerIntensity
+[1] ""
+
+$transform$cnAperture
+[1] ""
+
+$transform$cnIntensity
+[1] ""
+
+$transform$size
+[1] ""
+
+
+$depends
+$depends$c1Aperture
+character(0)
+
+$depends$c2Aperture
+character(0)
+
+$depends$c1Intensity
+character(0)
+
+$depends$c2Intensity
+character(0)
+
+$depends$inerAperture
+character(0)
+
+$depends$inerIntensity
+character(0)
+
+$depends$cnAperture
+character(0)
+
+$depends$cnIntensity
+character(0)
+
+$depends$size
+character(0)
+
+
+$hierarchy
+   c1Aperture    c2Aperture   c1Intensity   c2Intensity  inerAperture inerIntensity    cnAperture   cnIntensity          size 
+            1             1             1             1             1             1             1             1             1 
+
+$nbParameters
+[1] 9
+
+$nbFixed
+[1] 0
+
+$nbVariable
+[1] 9
+
+# 2021-09-11 20:23:05 -03: Parameters have been read
+# 0 expression(s) specifying forbidden configurations read from '/home/dragon/Desktop/Proyectos/PSO-IRACE/forbidden.txt'
+# 2021-09-11 20:23:05 -03: RNGkind: Mersenne-Twister Inversion Rejection
+# 2021-09-11 20:23:05 -03: .Random.seed: 10403, 624, 2133063993, -1666222170, -650363409, 1112652644, -44358891, -1512560430, -251831765, 849372016, 317477041, 2013698750, 233017383, 1035168316, -280158707, -1454065302, -1616061469, -2139513912, -1441601751, 235483350, -441648801, -1383300076, -1605449723, 658730242, 1250518171, 247230240, -844522335, -362309138, -1850386025, 1029466348, 1027604733, 1296737178, 1387123795, -582075016, 1849577753, -1021430266, -34238257, 1724807364, 1211934965, -1776501454, 1741753099, -889166128, -77929327, -906664674, -1799192825, 2134512540, -400777235, -218621494, 1137043651, 990923560, 1795503881, 771852086, 1917649983, 1965201780, 670287333, 623319394, -704950917, 1789348480, 826222721, -853345202, 136446071, 1035430476, 647101149, 1199578106, -553903821, 1985660120, 663132409, 361112678, 816468911, -229382620, 906174165, -2015002222, -68211733, 262937136, 1683318897, 388194174, -1297424921, -1644204804, -351333939, 281389610, 571958691, -494359928, 44136169, -985723498, 885292831, -1158848812, 481932229, 580580802, -1974229413, -1429613088, -648240031, 1743359662, -1594615977, 1610423212, -742202179, 1567343706, 211734035, -105579464, 586469593, 1031750342, -133003633, 507118468, 707167413, 977958386, -342901557, -1417970288, 349428817, 1277725150, -1789612857, -1906608548, 446460845, -1261081974, 265900675, 213563880, 1725933257, 1666827254, -506762753, -1908091852, 1075351973, 615973410, -1278578885, -1342435008, -889581503, 1297305870, 2011405879, 780500236, -2058699107, 1193647290, 2127426291, -214637672, 1417738425, 815894822, -1226430097, 1339609316, -1004610923, 2019793490, 283819435, 893817072, -808566735, 563930174, -965219417, -257544260, 1430046093, 490691306, -29118621, -1149339320, 163038889, -471225770, 169460959, 713095572, -1886888059, 1016282754, 983017499, 1192623264, 118451233, -604486802, 78157079, -542601620, 933333117, 1220912410, -188643373, 1521646328, 740495513, 814026630, -1411564465, 411586116, -547086219, 424210098, -499634549, 803558480, 1413256209, 471363230, 734829191, 288856348, 896010093, 337345354, -91325373, 1554770088, -652093815, 1854324918, 442994623, -151400716, 1149312357, -2025346334, -1561112325, 686790656, -1969965055, 1047553486, 452656119, 1438535628, -1556135331, 845405562, 1236372659, -1811561896, -1781327751, -893272602, -240140497, 899709860, -1821485483, 1209106, 1907363691, 170903472, 1561778161, -1942804226, 118143335, -395857284, 295057741, -276706390, 770816291, -904198136, 1058395753, 1992886038, 1533856415, -2029562796, -730150075, 770459458, 219507163, -94313632, 1317139425, 1800648750, -359476521, 522109228, 1016851517, 1612203482, 1960182163, 1862711736, -108457895, -655385530, 2132128271, -1871095548, 867531829, 467150706, 1837785163, 519957264, -1588261935, -1903881378, -169195449, 445545436, -62956755, -1853207542, -576363005, 1235474280, 562808393, -1136099978, -236882561, -1711175244, -252876507, 1704530850, 892727995, 1279385280, 1204756417, 624573070, -14149193, 1981932172, 875529757, -1174741446, -1989745037, 663576856, 993851449, -2136560986, 650581231, 1047193188, 1337037333, 1739721682, 536813867, -1255686544, -739299407, 195440062, -232569049, -133958340, -1009029875, 1749875818, 1793164003, -1927391544, -495213015, 1251812310, -562196385, 457207572, -2024737019, 1868959746, 1938615195, -1687516640, 1735670689, -88347410, 1081266327, 1092596716, 1987186685, -1272732006, -1231275181, 1701951608, -1159278567, 863955206, -1753487409, -2134039612, -1294297099, -357031886, 1866879499, -8044080, -1545780335, -1204914146, 1366144519, 2099256988, -220041491, 1843518666, 1390284739, -1302165976, 1608349193, 2036267574, -34006209, 572261492, -1055034139, -1737802654, -1135455109, 1353901440, -1704376447, 1181798222, -232065161, 309343564, -1411675683, 1319804666, 1202585651, 1015791576, 1417582585, -1357883546, 1542204079, -990375644, 1688767957, -1207802734, -577244437, 485389616, -1139325071, 347468414, -981363481, 1379596284, -808689459, 677440810, 785583267, 1128818056, -207014423, -333053802, 151787039, -236172844, 63627973, 968923330, -1614926501, -1057820448, -911850655, 787538350, -1274507689, 678127276, 954463165, 363317082, -1546373869, 749958968, 1610371033, -51186234, -623911537, -1539068284, -1466731595, -290924302, -1993604149, 406542480, -1013630127, 1842650334, 1545003975, -877887140, 1561412269, -1444794998, -1275561597, 900199656, 1943463369, -1836435722, -1804697345, -100057292, -254721883, -1199692510, 1242068539, 755149888, -635228351, -1496046578, -2117888713, 1835616268, 1040403869, 556998586, 1313266163, 566288024, -1319635015, 1925104678, 1457455215, -469238812, -32290411, -1178370734, 742032555, -398201872, 1565466417, -601721026, 2128978599, -372458820, 1495864461, -1870815766, -1283041693, -346475448, 845055401, -1474060970, 282614751, -708123500, 1705545349, -2051284606, -2090258661, -1044768864, -1395127519, 1823643246, -1290531817, 2009192812, -1749969027, 358918170, -432148781, 1938552312, -1735815271, -1307852154, -288255153, 1973221700, 547360629, 1349145010, 486241675, 1876963152, 675083025, 1144488350, -207236729, 1492362268, 1049351789, 105594442, 448045891, 842277800, -46656119, -1266011210, -889084225, 1284061684, 2076757093, 512871906, -1340581893, -1745800448, 515692289, 186923214, -72224009, -1983046964, -563687075, 575955066, 653358003, -437469864, -511109255, -1468927770, -1654680017, 1985652388, 129090901, -172665326, 1302779499, 2112365232, -1084836111, 1454095358, -602967961, 1903771004, 1135708237, -1050472790, -222601181, 1141949192, 509318505, -1957299690, -341679713, 1369194324, -2002126267, 202893890, -800198437, -1266680224, 147428065, -658437330, 1800751575, -1847391188, 1721432893, 68831450, -409376621, -1464126280, -733048999, -1886826682, 960563471, 798557188, -423597259, -121861518, 1282713419, -852244976, -1181455663, -1877531042, -1243971769, 934643420, 1527917101, 64818954, 1624411395, -960032152, 1539376457, 1277096054, 2003995775, 73135284, 499390501, -479840606, -2143159877, 138312128, 1073102529, -132051570, 1840648375, 710651276, 1086723357, 47079738, 460180851, 1473207320, 886175545, -320217690, 1965943791, 380637540, 759431445, -1265111342, 1134356523, 77273456, -1444016463, 957464766, 1522466343, 1543536700, 858110989, -1680785558, -1506661917, -869330488, -144677591, 1652365014, 1328162655, -1340057068, 143599109, 1167373058, -131304805, 1879352608, -1791305055, 1474052078, -896776297, -1718681876, 962600701, -225924710, -777608621, -83807368, 1124814617, -1842635770, -539083057, -856174908, -2034989323, -1872788686, -111699701, -1225384752, 526099089, 1714653982, 7662855, 984754588, 912539117, -480796726, 538064579, -769605336, -1355696887, -2046268106, 796996159, -868126860, 1384326117, -541368478, 205871995, -1263894400, -712022399, -1299537330, -1517293961, -774569908, -656336675, 862003706, 897312563, 103332568, -1158506759, -1662612890, -469106257, 533216292, -628491051, -13940846, -807618069, 1662832688, -1529534863, -132872834, 951340007, -601718020, -1958367283, -1064816598, 1202369443, -1032576888, -1121127191, -1168575594, -1322275553, -65588012, 1092096453, 1794259906, 751088731, -1962406944, -907287967, -1899744082, 2121860439, 1904587180, 1673593533, -1318073766, -1910137837, 1495134776, -729821479, 1991420102, -932629361, 142170500, 1279025845, -2146223118, -983282997, 1944531856, -1051551151, -1689473058, -248177977, -190215076, 339874221, -1518669686, -1305239421, -218026008
+# Read 1 configuration(s) from file '/home/dragon/Desktop/Proyectos/PSO-IRACE/default.txt'
+  c1Aperture c2Aperture c1Intensity c2Intensity inerAperture inerIntensity cnIntensity cnAperture size
+1        1.0        1.0         1.0         1.0          1.0           1.0         1.0        1.0  100
+# 2021-09-11 20:23:05 -03: Initialization
+# Elitist race
+# Elitist new instances: 1
+# Elitist limit: 2
+# nbIterations: 5
+# minNbSurvival: 5
+# nbParameters: 9
+# seed: 1043786317
+# confidence level: 0.95
+# budget: 800
+# mu: 5
+# deterministic: FALSE
+
+# 2021-09-11 20:23:05 -03: Iteration 1 of 5
+# experimentsUsedSoFar: 0
+# remainingBudget: 800
+# currentBudget: 160
+# nbConfigurations: 26
+# 2021-09-11 20:23:05 -03: Sample 25 configurations from uniform distribution
+# 2021-09-11 20:23:05 -03: Configurations for the race n 1 (elite configurations listed first, then new configurations):
+   .ID. c1Aperture c2Aperture c1Intensity c2Intensity inerAperture inerIntensity cnAperture cnIntensity size .PARENT.
+1     1     1.0000     1.0000      1.0000      1.0000       1.0000        1.0000     1.0000      1.0000  100       NA
+2     2     1.8905     1.1392      0.3232      0.2851       1.2895        1.4554     0.6022      0.9507  190       NA
+3     3     0.3704     0.3104      0.0952      0.8817       1.1862        1.3543     0.8051      0.9145  140       NA
+4     4     0.9375     1.3196      1.3618      0.6931       0.2132        1.8254     0.4522      0.9499  205       NA
+5     5     0.1372     1.8538      1.6696      1.3568       1.9099        0.1776     1.2915      1.0929  117       NA
+6     6     0.6707     0.7802      1.7888      0.5918       0.9076        0.1673     0.3122      0.6416  452       NA
+7     7     1.2081     1.1884      1.2437      1.6904       0.9632        0.6866     0.2002      1.7836  333       NA
+8     8     1.6876     0.2545      1.9333      1.1951       0.6931        1.6840     0.8182      0.8121  269       NA
+9     9     0.1822     0.5950      0.0206      0.0084       1.2169        1.1601     0.6773      1.1143  451       NA
+10   10     1.6816     1.3472      1.9734      0.3145       0.9758        0.7338     0.6323      1.9314  451       NA
+11   11     1.0484     1.0197      1.8629      0.0262       0.1592        1.5163     1.9869      0.7633  481       NA
+12   12     0.3657     0.8865      1.5987      0.9295       0.9968        0.1576     1.1647      0.3328  243       NA
+13   13     1.8390     0.6450      0.9782      1.2900       1.6471        0.7177     1.9717      0.7595  295       NA
+14   14     0.7332     1.3595      1.0468      0.9181       0.1269        1.9412     1.5197      1.7562  120       NA
+15   15     0.0265     1.4810      0.1070      1.6221       1.3237        1.8890     1.4962      1.3444  100       NA
+16   16     0.8698     1.7902      0.6780      0.6429       1.6064        0.2895     1.3456      1.0175  204       NA
+17   17     1.2770     0.1287      1.2384      1.6267       1.9317        0.2511     0.4237      0.7685  476       NA
+18   18     0.1641     1.5239      1.4768      0.2445       0.1134        1.3428     0.5413      1.5993  426       NA
+19   19     1.3320     0.6369      1.3399      1.0784       1.2162        1.1339     0.2846      0.0886  223       NA
+20   20     1.1794     1.2576      0.5287      0.4788       1.3842        0.8571     0.7432      0.7126  422       NA
+21   21     1.0496     0.9761      0.5578      1.6970       0.2803        1.3759     1.5137      0.3731  210       NA
+22   22     1.9337     0.2343      0.3796      0.8313       0.9342        0.5870     0.4027      1.5072  490       NA
+23   23     1.9725     1.5103      0.3052      1.0722       1.4410        0.1219     0.4011      0.7706  206       NA
+24   24     0.0837     1.4153      1.7200      1.2922       0.3036        1.0666     1.3532      1.4017  219       NA
+25   25     0.2223     0.9718      0.4859      1.1522       0.8055        1.8178     1.5739      1.4844  473       NA
+26   26     0.1171     1.8213      0.1698      0.6401       0.1438        0.6645     1.7207      0.5155  270       NA
+# 2021-09-11 20:23:05 -03: Launch race
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . All alive configurations are elite and nothing is discarded
+
++-+-----------+-----------+-----------+---------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|      Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+---------------+-----------+--------+-----+----+------+
+AKI SE IMRPIMEAKI SE IMRPIMEAKI SE IMRPIME
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 1 c2Aperture 1 c1Intensity 1 c2Intensity 1 inerAperture 1 inerAperture 1 cnAperture  1 cnIntensity 1 size 100 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+AKI SE IMRPIME
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 0.3704 c2Aperture 0.3104 c1Intensity 0.0952 c2Intensity 0.8817 inerAperture 1.1862 inerAperture 1.3543 cnAperture  0.8051 cnIntensity 0.9145 size 140 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 1.8905 c2Aperture 1.1392 c1Intensity 0.3232 c2Intensity 0.2851 inerAperture 1.2895 inerAperture 1.4554 cnAperture  0.6022 cnIntensity 0.9507 size 190 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+AKI SE IMRPIMEAKI SE IMRPIME
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 0.9375 c2Aperture 1.3196 c1Intensity 1.3618 c2Intensity 0.6931 inerAperture 0.2132 inerAperture 1.8254 cnAperture  0.4522 cnIntensity 0.9499 size 205 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+AKI SE IMRPIME
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 0.1372 c2Aperture 1.8538 c1Intensity 1.6696 c2Intensity 1.3568 inerAperture 1.9099 inerAperture 0.1776 cnAperture  1.2915 cnIntensity 1.0929 size 117 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+AKI SE IMRPIME
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 0.6707 c2Aperture 0.7802 c1Intensity 1.7888 c2Intensity 0.5918 inerAperture 0.9076 inerAperture 0.1673 cnAperture  0.3122 cnIntensity 0.6416 size 452 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 1.2081 c2Aperture 1.1884 c1Intensity 1.2437 c2Intensity 1.6904 inerAperture 0.9632 inerAperture 0.6866 cnAperture  0.2002 cnIntensity 1.7836 size 333 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+AKI SE IMRPIMEAKI SE IMRPIME
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 1.6876 c2Aperture 0.2545 c1Intensity 1.9333 c2Intensity 1.1951 inerAperture 0.6931 inerAperture 1.684 cnAperture  0.8182 cnIntensity 0.8121 size 269 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+AKI SE IMRPIME
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 1.6816 c2Aperture 1.3472 c1Intensity 1.9734 c2Intensity 0.3145 inerAperture 0.9758 inerAperture 0.7338 cnAperture  0.6323 cnIntensity 1.9314 size 451 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 0.1822 c2Aperture 0.595 c1Intensity 0.0206 c2Intensity 0.0084 inerAperture 1.2169 inerAperture 1.1601 cnAperture  0.6773 cnIntensity 1.1143 size 451 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+AKI SE IMRPIMEAKI SE IMRPIME
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 1.0484 c2Aperture 1.0197 c1Intensity 1.8629 c2Intensity 0.0262 inerAperture 0.1592 inerAperture 1.5163 cnAperture  1.9869 cnIntensity 0.7633 size 481 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+AKI SE IMRPIME
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 1.839 c2Aperture 0.645 c1Intensity 0.9782 c2Intensity 1.29 inerAperture 1.6471 inerAperture 0.7177 cnAperture  1.9717 cnIntensity 0.7595 size 295 
+
+Error executing: Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21  com.company.Main	at com.company.Main.mappingArg(Main.java:20)  -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 0.3657 c2Aperture 0.8865 c1Intensity 1.5987 c2Intensity 0.9295 inerAperture 0.9968 inerAperture 0.1576 cnAperture  1.1647 cnIntensity 0.3328 size 243	at com.company.Main.main(Main.java:130)  
+
+
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+AKI SE IMRPIMEAKI SE IMRPIME
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 0.7332 c2Aperture 1.3595 c1Intensity 1.0468 c2Intensity 0.9181 inerAperture 0.1269 inerAperture 1.9412 cnAperture  1.5197 cnIntensity 1.7562 size 120 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+AKI SE IMRPIME
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 0.0265 c2Aperture 1.481 c1Intensity 0.107 c2Intensity 1.6221 inerAperture 1.3237 inerAperture 1.889 cnAperture  1.4962 cnIntensity 1.3444 size 100 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 0.8698 c2Aperture 1.7902 c1Intensity 0.678 c2Intensity 0.6429 inerAperture 1.6064 inerAperture 0.2895 cnAperture  1.3456 cnIntensity 1.0175 size 204 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+AKI SE IMRPIMEAKI SE IMRPIME
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 1.277 c2Aperture 0.1287 c1Intensity 1.2384 c2Intensity 1.6267 inerAperture 1.9317 inerAperture 0.2511 cnAperture  0.4237 cnIntensity 0.7685 size 476 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+AKI SE IMRPIME
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 0.1641 c2Aperture 1.5239 c1Intensity 1.4768 c2Intensity 0.2445 inerAperture 0.1134 inerAperture 1.3428 cnAperture  0.5413 cnIntensity 1.5993 size 426 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+AKI SE IMRPIME
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 1.332 c2Aperture 0.6369 c1Intensity 1.3399 c2Intensity 1.0784 inerAperture 1.2162 inerAperture 1.1339 cnAperture  0.2846 cnIntensity 0.0886 size 223 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+AKI SE IMRPIME
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 1.1794 c2Aperture 1.2576 c1Intensity 0.5287 c2Intensity 0.4788 inerAperture 1.3842 inerAperture 0.8571 cnAperture  0.7432 cnIntensity 0.7126 size 422 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+AKI SE IMRPIME
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 1.9337 c2Aperture 0.2343 c1Intensity 0.3796 c2Intensity 0.8313 inerAperture 0.9342 inerAperture 0.587 cnAperture  0.4027 cnIntensity 1.5072 size 490 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 1.0496 c2Aperture 0.9761 c1Intensity 0.5578 c2Intensity 1.697 inerAperture 0.2803 inerAperture 1.3759 cnAperture  1.5137 cnIntensity 0.3731 size 210 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+AKI SE IMRPIMEAKI SE IMRPIME
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 1.9725 c2Aperture 1.5103 c1Intensity 0.3052 c2Intensity 1.0722 inerAperture 1.441 inerAperture 0.1219 cnAperture  0.4011 cnIntensity 0.7706 size 206 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+AKI SE IMRPIME
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 0.0837 c2Aperture 1.4153 c1Intensity 1.72 c2Intensity 1.2922 inerAperture 0.3036 inerAperture 1.0666 cnAperture  1.3532 cnIntensity 1.4017 size 219 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 0.2223 c2Aperture 0.9718 c1Intensity 0.4859 c2Intensity 1.1522 inerAperture 0.8055 inerAperture 1.8178 cnAperture  1.5739 cnIntensity 1.4844 size 473 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+
+
+Error executing:  com.company.Main -cp ./pso/src com.company.Main com.company.Main i 44  c1Aperture 0.1171 c2Aperture 1.8213 c1Intensity 0.1698 c2Intensity 0.6401 inerAperture 0.1438 inerAperture 0.6645 cnAperture  1.7207 cnIntensity 0.5155 size 270 
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 21 out of bounds for length 21 	at com.company.Main.mappingArg(Main.java:20) 	at com.company.Main.main(Main.java:130) 
+

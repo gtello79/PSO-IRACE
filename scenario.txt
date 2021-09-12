@@ -15,8 +15,6 @@ forbiddenFile = "forbidden.txt"
 ## Directory where the programs will be run.
 execDir = "."
 
-
-
 ## Directory where tuning instances are located, either absolute path or
 ## relative to current directory.
 trainInstancesDir = ""
@@ -42,7 +40,7 @@ parallel = 3
 
 ## A value of 0 silences all debug messages. Higher values provide
 ## more verbose debug messages.
-# debugLevel = 3
+debugLevel = 10
 
 
 
@@ -54,8 +52,8 @@ parallel = 3
 targetRunner = function (experiment, scenario) {
   suppressMessages(require("stringr"))
 
-  #comment this line to execute acotsp!
-  return(list(cost=runif(n=1, min=100, max=2000)))
+  # comment this line to execute acotsp!
+  # return(list(cost=runif(n=1, min=100, max=2000)))
 
   # Target algorithm executable   
   exe = "com.company.Main"
@@ -67,15 +65,14 @@ targetRunner = function (experiment, scenario) {
   instance_name = experiment$instance
 
   # Define fixed parameters (budget or other options)
-  fixed_params = "-cp ./pso/src"
+  fixed_params = "-cp ./pso/src com.company.Main"
 
   # Create parameter arguments for command line
   parameters    = buildCommandLine(experiment$configuration, experiment$switches)
 
 
   # Create command line
-  command_line = paste (exe, fixed_params, "i", instance_name, parameters, sep=" ")
-  print(command_line)
+  command_line = paste (fixed_params, "i", instance_name, parameters, sep=" ")
   # Execute command
   output = system2(command="java", args=command_line, stdout=TRUE, stderr=TRUE)
 
