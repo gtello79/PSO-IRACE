@@ -1,0 +1,5 @@
+15;data/5_4/TRT005/CoordinatesBeam_15.txt
+85;data/5_4/TRT005/CoordinatesBeam_85.txt
+155;data/5_4/TRT005/CoordinatesBeam_155.txt
+225;data/5_4/TRT005/CoordinatesBeam_225.txt
+295;data/5_4/TRT005/CoordinatesBeam_295.txt

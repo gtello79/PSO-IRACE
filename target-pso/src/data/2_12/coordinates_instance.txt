@@ -1,0 +1,5 @@
+55;data/2_12/TRT002/CoordinatesBeam_55.txt
+125;data/2_12/TRT002/CoordinatesBeam_125.txt
+195;data/2_12/TRT002/CoordinatesBeam_195.txt
+265;data/2_12/TRT002/CoordinatesBeam_265.txt
+335;data/2_12/TRT002/CoordinatesBeam_335.txt

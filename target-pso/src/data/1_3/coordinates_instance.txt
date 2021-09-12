@@ -1,0 +1,5 @@
+10;data/1_3/TRT001/CoordinatesBeam_10.txt
+80;data/1_3/TRT001/CoordinatesBeam_80.txt
+150;data/1_3/TRT001/CoordinatesBeam_150.txt
+220;data/1_3/TRT001/CoordinatesBeam_220.txt
+290;data/1_3/TRT001/CoordinatesBeam_290.txt
