@@ -1,5 +1,0 @@
-20;data/4_5/TRT004/CoordinatesBeam_20.txt
-90;data/4_5/TRT004/CoordinatesBeam_90.txt
-160;data/4_5/TRT004/CoordinatesBeam_160.txt
-230;data/4_5/TRT004/CoordinatesBeam_230.txt
-300;data/4_5/TRT004/CoordinatesBeam_300.txt

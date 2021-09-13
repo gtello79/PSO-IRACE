@@ -1,4 +1,0 @@
-0 70 140 210 280
-data/6_1/CERR_Prostate/DAO_DDM_BLADDER.dat
-data/6_1/CERR_Prostate/DAO_DDM_RECTUM.dat
-data/6_1/CERR_Prostate/DAO_DDM_PTVHD.dat
