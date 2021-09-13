@@ -96,7 +96,8 @@ public class Swarm {
 
         //bestGlobalParticle.printFluenceMapByBeam();
         System.out.println("Initial solution: " + firstSolution  + " - Final solution: "+ bestGlobalEval + " - last Change: "+ lastChange);
-        System.out.println(bestGlobalEval);
+        System.out.println("Best_fit = "+bestGlobalEval);
+        System.out.println("try 0, Best "+bestGlobalEval+", found at iteration 3332,");
     }
 
 

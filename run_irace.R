@@ -1,5 +1,5 @@
 library("irace")
-
+library("stringr")
 
 parameters <- readParameters("parameters.txt")
 scenario <- readScenario("scenario.txt")

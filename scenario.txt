@@ -65,7 +65,7 @@ targetRunner = function (experiment, scenario) {
   instance_name = experiment$instance
 
   # Define fixed parameters (budget or other options)
-  fixed_params = "-cp ./pso/src com.company.Main"
+  fixed_params = "-cp ./target-pso/src com.company.Main"
 
   # Create parameter arguments for command line
   parameters    = buildCommandLine(experiment$configuration, experiment$switches)

@@ -163,7 +163,8 @@ public class Main {
         if(params.containsKey("size")) 
             size = Integer.parseInt(params.get("size"));
         if(!params.containsKey("iter")) 
-            iter = 40000/size;    
+            iter = 40000/size;
+            iter = 2;    
             //iter = Integer.parseInt(params.get("iter"));
         
         if(params.containsKey("c1Aperture")) 
