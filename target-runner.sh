@@ -17,7 +17,6 @@
 echo "$RANDOM"
 exit 0
 
-echo "AQUI SI FUNCIONA BIEN PO REY"
 
 error() {
     echo "`TZ=UTC date`: $0: error: $@" >&2
