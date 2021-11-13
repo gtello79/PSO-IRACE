@@ -23,37 +23,23 @@ trainInstancesFile = "instances/train_instances.txt"
 ## Set testing data 
 testInstancesDir = ""
 testInstancesFile = "instances/test_instances.txt"
-testNumElites = 80
-
-
+testNumElites = 90
 
 ## The maximum number of runs (invocations of targetRunner) that will performed. It
 ## determines the (maximum) budget of experiments for the tuning.
 maxExperiments = 600
 
-
-
 ## Number of CPU cores to use
 parallel = 4
-
-
 
 ## A value of 0 silences all debug messages. Higher values provide
 ## more verbose debug messages.
 debugLevel = 10
 
 
-
-## Target runner
-## Bash script that executes the target algorithm
-##targetRunner = "./target-runner"
-
 ## R function that executes the target algorithm
 targetRunner = function (experiment, scenario) {
   suppressMessages(require("stringr"))
-
-  # comment this line to execute acotsp!
-  # return(list(cost=runif(n=1, min=100, max=2000)))
 
   # Target algorithm executable   
   exe = "com.company.Main"
@@ -65,14 +51,14 @@ targetRunner = function (experiment, scenario) {
   instance_name = experiment$instance
 
   # Define fixed parameters (budget or other options)
-  fixed_params = "-cp ./target-pso/src com.company.Main"
+  fixed_params = "-classpath ./production/PSO:$LD_LIBRARY_PATH/gurobi.jar com.company.Main"
 
   # Create parameter arguments for command line
   parameters    = buildCommandLine(experiment$configuration, experiment$switches)
 
-
   # Create command line
   command_line = paste (fixed_params, "i", instance_name, parameters, sep=" ")
+
   # Execute command
   output = system2(command="java", args=command_line, stdout=TRUE, stderr=TRUE)
 
@@ -84,9 +70,15 @@ targetRunner = function (experiment, scenario) {
   }
 
   # Parse output 
-  sel = which(sapply(output, grep, pattern="try 0, Best", ignore.case = FALSE, value=FALSE) == 1)
-  result = as.numeric(str_split(str_trim(str_split(output[sel],"," )[[1]][2]), "\\s")[[1]][2])
-   
+  sel = which(sapply(output, grep, pattern="-- Best Fitness:", ignore.case = FALSE, value=FALSE) == 1)
+  
+  # Parse the solution with the label
+  x = str_split(output[sel],":" )[[1]][2]
+  # Parse the value with the whitespace
+  y = str_split(x, "\\s")[[1]][2]
+  # Convert the string on a float
+  result = as.numeric(y)
+
   # Return result 
   # Result should be a list with elements cost and time (optional)
   return(list(cost=result))
